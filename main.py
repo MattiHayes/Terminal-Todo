@@ -28,7 +28,7 @@ def get_task_num(num_tasks: int) -> int:
     while True:
         try:
             task_num = int(input("> "))
-            if 0 < task_num <  num_tasks:
+            if 0 < task_num <=  num_tasks:
                 return task_num
             print("invalid task")
         except ValueError:
@@ -43,19 +43,23 @@ def main():
         print("---------------------")
         option = get_instruction()
 
+        if len(todo) == 0 and (1 < option < len(OPTIONS)):
+            print("Todo list is empty")
+            continue
+
         match option:
             case 1:
                 print("Input task")
                 task_name = input("> ")
                 todo.add_task(task_name)
             case 2:
-                task_num = get_task_num(todo.number_of_tasks)
+                task_num = get_task_num(len(todo))
                 todo.mark_complete(task_num)
             case 3:
-                task_num = get_task_num(todo.number_of_tasks)
+                task_num = get_task_num(len(todo))
                 todo.mark_incomplete(task_num)
             case 4:
-                task_num = get_task_num(todo.number_of_tasks)
+                task_num = get_task_num(len(todo))
                 todo.remove(task_num)
             case 5:
                 todo.remove_complete()
