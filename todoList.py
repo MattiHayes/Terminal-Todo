@@ -1,3 +1,4 @@
+import json
 from task import Task
 
 class TodoList:
@@ -13,7 +14,7 @@ class TodoList:
 
     def __len__(self):
         return len(self.tasks)
-
+    
     def add_task(self, name: str):
         self.tasks.append(Task(name))
 
@@ -41,3 +42,12 @@ class TodoList:
 
     def remove_complete(self):
         self.tasks = [task for task in self.tasks if not task.complete]
+
+    def load_json(self, file: str):
+        with open(file) as f:
+            task_dics = json.load(f)
+            for t in task_dics:
+                self.tasks.append(Task.from_dict(t))
+
+    def jsonify(self):
+        return [task.to_dict() for task in self.tasks]

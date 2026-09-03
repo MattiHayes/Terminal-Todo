@@ -1,3 +1,6 @@
+import json
+import atexit
+import signal
 from todoList import TodoList
 
 OPTIONS = [
@@ -34,8 +37,29 @@ def get_task_num(num_tasks: int) -> int:
         except ValueError:
             print("Please input the number of the task")
 
+def exit_handler(todo: TodoList):
+    if len(todo) > 0:
+        with open("todo.json", "w") as f:
+            json.dump(todo.jsonify(), f, indent=4)
+
+def ctrl_c_handler(signum, frame):
+    print("\nCTRL-c was pressed. Exiting")
+    exit(1)
+
+
 def main():
     todo = TodoList()
+    # load tasks
+    try: 
+        todo.load_json("todo.json") 
+    except FileNotFoundError:
+        pass
+    # register exit handler
+    atexit.register(exit_handler, todo)
+    # register handler for CTRL-c
+    signal.signal(signal.SIGINT, ctrl_c_handler)
+
+    # main loop
     while True:
         print("To DO:")
         print("---------------------")
