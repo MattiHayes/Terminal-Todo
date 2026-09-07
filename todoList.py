@@ -30,11 +30,11 @@ class TodoList:
 
     def mark_complete(self, task_num: int):
         self._validate_task_num(task_num)
-        self.tasks[task_num -1].complete = True
+        self.tasks[task_num -1].is_complete()
 
     def mark_incomplete(self, task_num: int):
         self._validate_task_num(task_num)
-        self.tasks[task_num -1].complete = False
+        self.tasks[task_num -1].is_incomplete()
 
     def remove(self, task_num: int):
         self._validate_task_num(task_num)
@@ -45,7 +45,12 @@ class TodoList:
 
     def load_json(self, file: str):
         with open(file) as f:
-            task_dics = json.load(f)
+            try:
+                task_dics = json.load(f)
+            except json.decoder.JSONDecodeError:
+                print("Error loading tasks from json file")
+                return
+            
             for t in task_dics:
                 self.tasks.append(Task.from_dict(t))
 
