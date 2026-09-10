@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Input, ListView, Checkbox
+from textual.widgets import Input, ListView, Checkbox, Header
 
 from todoList import TodoList
 
@@ -40,7 +40,7 @@ class TodoApp(App):
         super().__init__(driver_class, css_path, watch_css, ansi_color)
 
     def compose(self) -> ComposeResult:
-        # yield Footer()
+        yield Header()
         yield TaskList(id="tasks")
 
     def on_mount(self) -> None:
@@ -51,6 +51,12 @@ class TodoApp(App):
             )
         
     def action_new_task(self):
+        raise NotImplementedError
+
+    def action_remove_task(self):
+        raise NotImplementedError
+
+    def action_remove_complete(self):
         raise NotImplementedError
 
 
