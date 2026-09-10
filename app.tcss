@@ -1,0 +1,15 @@
+TaskList {
+    margin: 1 2;
+    border: round white;
+}
+
+NewTask {
+    margin: 1 2;
+    border: round white;
+}
+
+Checkbox {
+    background: $boost 0%;
+    border: hidden;
+    padding: 1; 
+}
