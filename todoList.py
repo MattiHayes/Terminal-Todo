@@ -14,6 +14,9 @@ class TodoList:
 
     def __len__(self):
         return len(self.tasks)
+
+    def __iter__(self):
+        return iter(self.tasks)
     
     def add_task(self, name: str):
         self.tasks.append(Task(name))
