@@ -1,5 +1,6 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Input, ListView, Checkbox, Header
+from textual.screen import  ModalScreen
+from textual.widgets import Input, ListView, ListItem, Checkbox, Header
 
 from todoList import TodoList
 
@@ -10,6 +11,12 @@ class TaskList(ListView):
         self.border_title = "To Do"
         self.border_subtitle = "n-New Task r-Remove Task ^r-Remove Complete Tasks"
 
+    def display_tasks(self, todo: TodoList) -> None:
+        self.clear()
+        self.extend(
+                ListItem(Checkbox(task.name, task.complete))
+                for task in todo    
+            )
     
 class NewTask(Input):
 
@@ -17,8 +24,21 @@ class NewTask(Input):
         self.placeholder = ">"
         self.border_title = "New Task"        
 
+
+class NewTaskScreen(ModalScreen):
+
+    BINDINGS = [
+        ("ctrl+z", "cancel", "Cancel New Task")
+    ]
+
     def compose(self) -> ComposeResult:
-        return super().compose()
+        yield NewTask()
+
+    def action_cancel(self) -> None:
+        self.app.pop_screen()
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        self.dismiss(event.value)
 
 class TodoApp(App):
 
@@ -29,29 +49,31 @@ class TodoApp(App):
         ("^r", "remove_complete", "Remove Complete Tasks")
     ]
 
-    def __init__(self,
-                 todo : TodoList,
-                 driver_class = None, 
-                 css_path = None, 
-                 watch_css = False, 
-                 ansi_color = None
+    def __init__(
+            self,
+            todo : TodoList,
+            driver_class = None, 
+            css_path = None, 
+            watch_css = False, 
+            ansi_color = None
         ):
         self._todo_list = todo
         super().__init__(driver_class, css_path, watch_css, ansi_color)
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield TaskList(id="tasks")
+        yield TaskList()
 
     def on_mount(self) -> None:
-        task_list = self.query_one("TaskList")
-        for task in self._todo_list:
-            task_list.append(
-                Checkbox(task.name, task.complete) 
-            )
+        self.refresh_tasks()
+        
         
     def action_new_task(self):
-        raise NotImplementedError
+        def add(task_name: str) -> None:
+            self._todo_list.add_task(task_name)
+            self.refresh_tasks()
+
+        self.push_screen(NewTaskScreen(), add)
 
     def action_remove_task(self):
         raise NotImplementedError
@@ -59,6 +81,9 @@ class TodoApp(App):
     def action_remove_complete(self):
         raise NotImplementedError
 
+    def refresh_tasks(self):
+        task_list = self.query_one("TaskList")
+        task_list.display_tasks(self._todo_list)
 
 
 if __name__ == "__main__":

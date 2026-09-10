@@ -13,3 +13,7 @@ Checkbox {
     border: hidden;
     padding: 1; 
 }
+
+NewTaskScreen {
+    align: center middle;
+}
