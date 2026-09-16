@@ -55,6 +55,10 @@ class CustomLog(Log):
         self.border_title = "Log"
         return super().on_mount()
 
+    def write_line(self, msg: str):
+        super().write_line("> " + msg)
+
+
 class TodoApp(App):
 
     CSS_PATH = "app.tcss"
@@ -82,13 +86,14 @@ class TodoApp(App):
 
     def on_mount(self) -> None:
         self.refresh_tasks()
+        self._log = self.query_one(CustomLog)
         
         
     def action_new_task(self):
         def add(task_name: str) -> None:
             self._todo_list.add_task(task_name)
             self.refresh_tasks()
-            self.log_line(f"Added new task: \"{task_name}\"")
+            self._log.write_line(f"Added new task: \"{task_name}\"")
         self.push_screen(NewTaskScreen(), add)
 
     def action_remove_task(self):
@@ -97,7 +102,7 @@ class TodoApp(App):
     def action_remove_complete(self):
         self._todo_list.remove_complete()
         self.refresh_tasks()
-        self.log_line(f"Removed all complete tasks")
+        self._log.write_line(f"Removed all complete tasks")
 
     def refresh_tasks(self):
         task_list = self.query_one("TaskList")
@@ -109,15 +114,12 @@ class TodoApp(App):
   
         if task.complete:
             task.is_incomplete()
-            self.log_line(f"Task \"{task.name}\" marked incomplete.")
+            self._log.write_line(f"Task \"{task.name}\" marked incomplete.")
         else:
             task.is_complete()
-            self.log_line(f"Task \"{task.name}\" marked complete.")
+            self._log.write_line(f"Task \"{task.name}\" marked complete.")
         self.refresh_tasks()
 
-    def log_line(self, msg: str) -> None:
-        log = self.query_one(CustomLog)
-        log.write_line("> " + msg)
 
 
 
