@@ -17,6 +17,9 @@ class TodoList:
 
     def __iter__(self):
         return iter(self.tasks)
+
+    def __getitem__(self, key):
+        return self.tasks[key]
     
     def add_task(self, name: str):
         self.tasks.append(Task(name))

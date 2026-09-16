@@ -16,3 +16,9 @@ Checkbox {
 NewTaskScreen {
     align: center middle;
 }
+
+CustomLog {
+    margin: 1 2;
+    border: round white;
+    background: $boost;
+}

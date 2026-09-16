@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.screen import  ModalScreen
-from textual.widgets import Input, ListView, ListItem, Checkbox, Header
+from textual.widgets import Input, ListView, ListItem, Checkbox, Header, Log, Label
 
 from todoList import TodoList
 
@@ -13,11 +13,20 @@ class TaskList(ListView):
 
     def display_tasks(self, todo: TodoList) -> None:
         self.clear()
-        self.extend(
-                ListItem(Checkbox(task.name, task.complete))
-                for task in todo    
-            )
-    
+
+        tasks = []
+        for task in todo:
+            status = " " 
+            if task.complete:
+                status = "x"
+
+            tasks.append(
+                ListItem(
+                    Label(f"\[{status}] {task.name}")
+                    )
+                )
+        self.extend(tasks)
+
 class NewTask(Input):
 
     def on_mount(self) -> None:
@@ -39,6 +48,12 @@ class NewTaskScreen(ModalScreen):
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         self.dismiss(event.value)
+
+class CustomLog(Log):
+
+    def on_mount(self):
+        self.border_title = "Log"
+        return super().on_mount()
 
 class TodoApp(App):
 
@@ -63,6 +78,7 @@ class TodoApp(App):
     def compose(self) -> ComposeResult:
         yield Header()
         yield TaskList()
+        yield CustomLog()
 
     def on_mount(self) -> None:
         self.refresh_tasks()
@@ -72,7 +88,7 @@ class TodoApp(App):
         def add(task_name: str) -> None:
             self._todo_list.add_task(task_name)
             self.refresh_tasks()
-
+            self.log_line(f"Added new task: \"{task_name}\"")
         self.push_screen(NewTaskScreen(), add)
 
     def action_remove_task(self):
@@ -81,10 +97,28 @@ class TodoApp(App):
     def action_remove_complete(self):
         self._todo_list.remove_complete()
         self.refresh_tasks()
+        self.log_line(f"Removed all complete tasks")
 
     def refresh_tasks(self):
         task_list = self.query_one("TaskList")
         task_list.display_tasks(self._todo_list)
+
+    def on_list_view_selected(self, event: ListView.Selected) -> None:
+        # change task complete status
+        task = self._todo_list[event.index]
+  
+        if task.complete:
+            task.is_incomplete()
+            self.log_line(f"Task \"{task.name}\" marked incomplete.")
+        else:
+            task.is_complete()
+            self.log_line(f"Task \"{task.name}\" marked complete.")
+        self.refresh_tasks()
+
+    def log_line(self, msg: str) -> None:
+        log = self.query_one(CustomLog)
+        log.write_line("> " + msg)
+
 
 
 if __name__ == "__main__":
