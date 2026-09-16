@@ -51,6 +51,7 @@ class NewTaskScreen(ModalScreen):
     ]
 
     def compose(self) -> ComposeResult:
+        yield Header()
         yield NewTask()
 
     def action_cancel(self) -> None:

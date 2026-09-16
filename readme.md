@@ -5,6 +5,19 @@ programing and learn a bit about TUIs.
 
 A todo list is a basic project but the main point of the project is the TUI.
 
-Currentlt the TUI looks like this, however only "add new" has been implemenmted.
+## Screens and Functionality
 
-<img src=./assets/TodoApp_2026-09-10T21_36_58_122036.svg>
+The TUI is shown below.
+<img src=./assets/normal_view.svg>
+
+When `n` is pressed then we are prompted to add a new task as shown below.
+<img src=./assets/new_task.svg>
+
+when `r` is pressed then we can remove tasks by clicking on them or selecting
+with arrow keys and pressing enter.
+<img src=./assets/remove_task.svg>
+
+## Notes
+The log may be a little overkill I know but I added it in to figure out
+the messages and possibly to help debug if I needed to and so it it there for 
+now. I will pobably add something to hide it and show it.
