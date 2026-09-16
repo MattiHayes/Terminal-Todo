@@ -5,7 +5,7 @@ programing and learn a bit about TUIs.
 
 A todo list is a basic project but the main point of the project is the TUI.
 
-## Screens and Functionality
+## How it works ...
 
 The TUI is shown below.
 <img src=./assets/normal_view.svg>
