@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.screen import  ModalScreen
-from textual.widgets import Input, ListView, ListItem, Checkbox, Header, Log, Label
+from textual.widgets import Input, ListView, ListItem, Header, Log, Label
 
 from todoList import TodoList
 
@@ -27,6 +27,16 @@ class TaskList(ListView):
                 )
         self.extend(tasks)
 
+class CustomLog(Log):
+
+    def on_mount(self):
+        self.border_title = "Log"
+        return super().on_mount()
+
+    def write_line(self, msg: str):
+        super().write_line("> " + msg)
+
+
 class NewTask(Input):
 
     def on_mount(self) -> None:
@@ -49,15 +59,6 @@ class NewTaskScreen(ModalScreen):
     def on_input_submitted(self, event: Input.Submitted) -> None:
         self.dismiss(event.value)
 
-class CustomLog(Log):
-
-    def on_mount(self):
-        self.border_title = "Log"
-        return super().on_mount()
-
-    def write_line(self, msg: str):
-        super().write_line("> " + msg)
-
 
 class TodoApp(App):
 
@@ -77,6 +78,7 @@ class TodoApp(App):
             ansi_color = None
         ):
         self._todo_list = todo
+        self._state = "normal"
         super().__init__(driver_class, css_path, watch_css, ansi_color)
 
     def compose(self) -> ComposeResult:
@@ -97,7 +99,15 @@ class TodoApp(App):
         self.push_screen(NewTaskScreen(), add)
 
     def action_remove_task(self):
-        raise NotImplementedError
+        # change the app state
+        if self._state == "normal":
+            self._state = "remove"
+            self.query_one(TaskList).add_class("remove")
+            self._log.write_line("App state changed to \"remove\"")
+        else:
+            self._state = "normal"
+            self.query_one(TaskList).remove_class("remove")
+            self._log.write_line("App state changed to \"normal\"")
 
     def action_remove_complete(self):
         self._todo_list.remove_complete()
@@ -109,9 +119,21 @@ class TodoApp(App):
         task_list.display_tasks(self._todo_list)
 
     def on_list_view_selected(self, event: ListView.Selected) -> None:
-        # change task complete status
-        task = self._todo_list[event.index]
-  
+        # check app state
+        if self._state == "normal":
+            # task status needs changing
+            self.toggle_task_state(event.index)
+        else:
+            # we need to remove tasks
+            self.remove_task(event.index)
+            
+    def remove_task(self, task_idx):
+        self._log.write_line(f"Removing task {self._todo_list[task_idx].name}")
+        self._todo_list.remove(task_idx)
+        self.refresh_tasks()
+
+    def toggle_task_state(self, task_idx: int) -> None:
+        task = self._todo_list[task_idx]
         if task.complete:
             task.is_incomplete()
             self._log.write_line(f"Task \"{task.name}\" marked incomplete.")
@@ -119,8 +141,6 @@ class TodoApp(App):
             task.is_complete()
             self._log.write_line(f"Task \"{task.name}\" marked complete.")
         self.refresh_tasks()
-
-
 
 
 if __name__ == "__main__":

@@ -21,4 +21,13 @@ CustomLog {
     margin: 1 2;
     border: round white;
     background: $boost;
+    height: 30%
+}
+
+ListView.remove > ListItem.-highlight{
+    background: red; 
+}
+
+ListView.remove > ListItem.-hovered{
+    background: red;
 }

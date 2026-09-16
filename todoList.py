@@ -24,27 +24,27 @@ class TodoList:
     def add_task(self, name: str):
         self.tasks.append(Task(name))
 
-    def _validate_task_num(self, task_num: int):
-        if task_num < 1:
+    def _validate_task_idx(self, task_idx: int):
+        if task_idx < 0:
             raise IndexError (
-                f"The task number shsould be greater than 0"
+                f"The task number shsould be >= 0"
             )
-        if task_num > len(self.tasks):
+        if task_idx >= len(self.tasks):
             raise IndexError (
-                f"There are {len(self.tasks)} tasks. {task_num} is out of range"
+                f"There are {len(self.tasks)} tasks. Index {task_idx} is out of range"
             )
 
-    def mark_complete(self, task_num: int):
-        self._validate_task_num(task_num)
-        self.tasks[task_num -1].is_complete()
+    def mark_complete(self, task_idx: int):
+        self._validate_task_idx(task_idx)
+        self.tasks[task_idx].is_complete()
 
-    def mark_incomplete(self, task_num: int):
-        self._validate_task_num(task_num)
-        self.tasks[task_num -1].is_incomplete()
+    def mark_incomplete(self, task_idx: int):
+        self._validate_task_idx(task_idx)
+        self.tasks[task_idx].is_incomplete()
 
-    def remove(self, task_num: int):
-        self._validate_task_num(task_num)
-        del self.tasks[task_num -1]
+    def remove(self, task_idx: int):
+        self._validate_task_idx(task_idx)
+        del self.tasks[task_idx]
 
     def remove_complete(self):
         self.tasks = [task for task in self.tasks if not task.complete]
