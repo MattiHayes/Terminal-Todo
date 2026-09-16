@@ -11,7 +11,6 @@ NewTask {
 Checkbox {
     background: $boost 0%;
     border: hidden;
-    padding: 1; 
 }
 
 NewTaskScreen {

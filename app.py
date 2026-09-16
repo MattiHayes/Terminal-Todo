@@ -46,7 +46,7 @@ class TodoApp(App):
     BINDINGS = [
         ("n", "new_task", "New Task"),
         ("r", "remove_task", "Remove Task"),
-        ("^r", "remove_complete", "Remove Complete Tasks")
+        ("ctrl+r", "remove_complete", "Remove Complete Tasks")
     ]
 
     def __init__(
@@ -79,7 +79,8 @@ class TodoApp(App):
         raise NotImplementedError
 
     def action_remove_complete(self):
-        raise NotImplementedError
+        self._todo_list.remove_complete()
+        self.refresh_tasks()
 
     def refresh_tasks(self):
         task_list = self.query_one("TaskList")
