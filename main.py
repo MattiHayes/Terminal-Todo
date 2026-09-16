@@ -18,7 +18,7 @@ if __name__ == "__main__":
     todo = TodoList()
     # load tasks
     try: 
-        todo.load_json("todo.json") 
+        todo.load_json("todo.json")
     except FileNotFoundError:
         pass
     # register exit handler

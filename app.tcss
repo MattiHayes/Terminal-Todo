@@ -25,9 +25,9 @@ CustomLog {
 }
 
 ListView.remove > ListItem.-highlight{
-    background: red; 
+    background-tint: red 90%; 
 }
 
 ListView.remove > ListItem.-hovered{
-    background: red;
+    background: red 90%;
 }

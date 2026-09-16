@@ -92,6 +92,10 @@ class TodoApp(App):
         
         
     def action_new_task(self):
+        if self._state == "remove":
+            self._log.write_line("Can't add new task in remove mode.")
+            return
+        
         def add(task_name: str) -> None:
             self._todo_list.add_task(task_name)
             self.refresh_tasks()
@@ -103,13 +107,19 @@ class TodoApp(App):
         if self._state == "normal":
             self._state = "remove"
             self.query_one(TaskList).add_class("remove")
+            self.query_one(TaskList).border_subtitle = "r-Exit Remove Task"
             self._log.write_line("App state changed to \"remove\"")
         else:
             self._state = "normal"
             self.query_one(TaskList).remove_class("remove")
+            self.query_one(TaskList).border_subtitle = "n-New Task r-Remove Task ^r-Remove Complete Tasks"
             self._log.write_line("App state changed to \"normal\"")
 
     def action_remove_complete(self):
+        if self._state == "remove":
+            self._log.write_line("Can't remove all complete tasks in remove mode.")
+            return
+
         self._todo_list.remove_complete()
         self.refresh_tasks()
         self._log.write_line(f"Removed all complete tasks")
@@ -128,7 +138,7 @@ class TodoApp(App):
             self.remove_task(event.index)
             
     def remove_task(self, task_idx):
-        self._log.write_line(f"Removing task {self._todo_list[task_idx].name}")
+        self._log.write_line(f"Removed task {self._todo_list[task_idx].name}")
         self._todo_list.remove(task_idx)
         self.refresh_tasks()
 
