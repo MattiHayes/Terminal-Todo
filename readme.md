@@ -1,9 +1,18 @@
-# Terminal Todo
-
-This is a simple terminal based todo list that I used to get back into
-programing and learn a bit about TUIs.
+# Terminal To Do
 
 A todo list is a basic project but the main point of the project is the TUI.
+
+Well that is it on the surface, but when you actually think about it there is much
+more to a To Do application: tasks need to be stored somewhere so they persist
+when the app is opened and closed.
+
+Then you may want to add sub tasks, you want to edit the tasks, remove them, maybe even undo removing one ... Will the TUI have states depending on what you are doing? Or will there be separate screens for everything? Where will I store the tasks, how do I manage multiple lists? 
+
+So yes a simple project in general, but there is still a lot to do to get a 'properly functioning' application. So yes the project is simple, but that allows me to focus on so much more for this side project. 
+
+Maybe I'm just over thinking this.  
+
+*TL;DR* Yes a To Do list is a simple programming project but that is the point because there is so much more to do.
 
 ## How it works ...
 
